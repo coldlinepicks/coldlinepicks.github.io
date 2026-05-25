@@ -5,355 +5,162 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cold Line Picks | AI-Powered Sports Picks</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: #050810;
-    color: #fff;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 60px;
-  }
-
-  .header { text-align: center; margin-bottom: 36px; }
-  .logo { font-size: 52px; margin-bottom: 8px; filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.5)); }
-  .brand-name { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
-  .tagline { font-size: 13px; color: #00c8ff; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; font-weight: 500; }
-  .divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #00c8ff, transparent); margin: 20px auto; }
-
-  .stats { display: flex; gap: 32px; margin-bottom: 36px; text-align: center; }
-  .stat-item .number { font-size: 22px; font-weight: 800; color: #00c8ff; }
-  .stat-item .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
-  .section-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; text-align: center; }
-
-  .platforms { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-  .platform-card { background: #0d1525; border: 1px solid #1a2840; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #fff; transition: all 0.2s ease; position: relative; overflow: hidden; }
-  .platform-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,255,0.3), transparent); }
-  .platform-card:hover { border-color: #00c8ff44; background: #0f1d35; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 200, 255, 0.08); }
-  .platform-left { display: flex; align-items: center; gap: 14px; }
-  .platform-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-  .platform-info .name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-  .platform-info .bonus { font-size: 12px; color: #00c8ff; font-weight: 600; }
-  .platform-info .sub { font-size: 11px; color: #666; margin-top: 1px; }
-  .signup-btn { background: linear-gradient(135deg, #00c8ff22, #0066ff22); border: 1px solid #00c8ff44; color: #00c8ff; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
-  .platform-card:hover .signup-btn { background: linear-gradient(135deg, #00c8ff33, #0066ff33); border-color: #00c8ff88; }
-  .badge { position: absolute; top: -1px; right: 12px; background: #00c8ff; color: #050810; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 0 0 6px 6px; letter-spacing: 1px; text-transform: uppercase; }
-
-  .pick-card { width: 100%; max-width: 420px; background: linear-gradient(135deg, #0a1628, #0d1e35); border: 1px solid #1a3050; border-radius: 14px; padding: 22px; margin-bottom: 16px; position: relative; overflow: hidden; }
-  .pick-card::after { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0,200,255,0.03) 0%, transparent 60%); pointer-events: none; }
-  .pick-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .pick-label { font-size: 10px; color: #00c8ff; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
-  .pick-confidence { font-size: 11px; background: #00c8ff22; color: #00c8ff; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-  .pick-player { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-  .pick-line { font-size: 15px; color: #00c8ff; font-weight: 700; margin-bottom: 14px; }
-  .pick-stats { display: flex; flex-direction: column; gap: 5px; }
-  .pick-stat { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
-  .pick-stat::before { content: '→'; color: #00c8ff; font-size: 10px; }
-
-  .picks-spacer { margin-bottom: 16px; }
-
-  .socials { display: flex; gap: 12px; margin-bottom: 32px; }
-  .social-btn { background: #0d1525; border: 1px solid #1a2840; color: #888; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-  .social-btn:hover { border-color: #00c8ff44; color: #fff; }
-
-  .disclaimer { width: 100%; max-width: 420px; background: #0a0e18; border: 1px solid #1a1f2e; border-radius: 10px; padding: 16px; text-align: center; }
-  .disclaimer p { font-size: 11px; color: #444; line-height: 1.7; }
-  .disclaimer strong { color: #666; }
-
-  .snow { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-  .flake { position: absolute; color: #00c8ff; opacity: 0.06; font-size: 20px; animation: fall linear infinite; }
-  @keyframes fall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 0.06; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
-  .content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
-</style>
-</head>
-<body>
-
-<div class="snow" id="snow"></div>
-
-<div class="content">
-
-  <div class="header">
-    <div class="logo">❄️</div>
-    <div class="brand-name">Cold Line Picks</div>
-    <div class="tagline">AI-Powered · Data-Driven · No Hype</div>
-    <div class="divider"></div>
-  </div>
-
-  <div class="stats">
-    <div class="stat-item"><div class="number">Daily</div><div class="label">Picks Posted</div></div>
-    <div class="stat-item"><div class="number">100%</div><div class="label">Data-Backed</div></div>
-    <div class="stat-item"><div class="number">Free</div><div class="label">Always</div></div>
-  </div>
-
-  <div class="section-title">⚡ Tonight's Picks | ECF Game 3 — May 23</div>
-
-  <!-- Pick 1: Power Play -->
-  <div class="pick-card">
-    <div class="pick-header">
-      <span class="pick-label">❄ Cold Line | 2-Pick Power Play</span>
-      <span class="pick-confidence">HIGH 🔥</span>
-    </div>
-    <div class="pick-player">Brunson + Bridges</div>
-    <div class="pick-line">Knicks Duo Combo 🎯</div>
-    <div class="pick-stats">
-      <div class="pick-stat">Brunson OVER 7.5 AST — 8.2 dimes/game last 5 playoffs, 4-1 vs this line</div>
-      <div class="pick-stat">Bridges OVER 13.5 PTS — 6 of last 7 games OVER, Hart draws double teams in G3</div>
-      <div class="pick-stat">Cavs can't stop Brunson facilitating + Bridges in space</div>
-    </div>
-  </div>
-
-  <!-- Pick 2: Goblin -->
-  <div class="pick-card" style="border-color:#1a3a50;">
-    <div class="pick-header">
-      <span class="pick-label">❄ Cold Line | Goblin Play</span>
-      <span class="pick-confidence">LOCK 🧊</span>
-    </div>
-    <div class="pick-player">D. Mitchell</div>
-    <div class="pick-line">UNDER 4.5 Assists</div>
-    <div class="pick-stats">
-      <div class="pick-stat">21-4 to the UNDER on assists since 2025 playoffs — 84% hit rate</div>
-      <div class="pick-stat">Averaging only 3.4 AST vs avg line of 4.6 in those games</div>
-      <div class="pick-stat">NY forces Mitchell into score-first mode, not facilitating</div>
-    </div>
-  </div>
-
-  <!-- Pick 3: Flex -->
-  <div class="pick-card" style="border-color:#1a3a30; margin-bottom: 32px;">
-    <div class="pick-header">
-      <span class="pick-label">❄ Cold Line | 3-Pick Flex</span>
-      <span class="pick-confidence">VALUE 💎</span>
-    </div>
-    <div class="pick-player">OG + Brunson + Mitchell</div>
-    <div class="pick-line">3-Pick Flex Play</div>
-    <div class="pick-stats">
-      <div class="pick-stat">OG Anunoby OVER 16.5 PTS — 22/29/29 in last 3 playoff road games</div>
-      <div class="pick-stat">Brunson OVER 7.5 AST — offense runs through him all series long</div>
-      <div class="pick-stat">D. Mitchell UNDER 4.5 AST — 84% hit rate trend continues in G3</div>
-    </div>
-  </div>
-
-  <div class="section-title">🎯 Play Our Picks On These Platforms</div>
-  <div class="platforms">
-
-    <a href="https://app.prizepicks.com/sign-up?invite_code=PR-28FME1N&source=prizepicks&medium=user_referral&campaign=108e927d-701d-4f2d-b46b-04380a7ff8c2&content=copy_link" target="_blank" class="platform-card">
-      <div class="badge">Most Popular</div>
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a2a1a;">🏆</div>
-        <div class="platform-info">
-          <div class="name">PrizePicks</div>
-          <div class="bonus">$50 Bonus on Signup</div>
-          <div class="sub">America's #1 Fantasy Picks App</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-
-    <a href="https://underdogfantasy.com" target="_blank" class="platform-card">
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a1a2a;">🐶</div>
-        <div class="platform-info">
-          <div class="name">Underdog Fantasy</div>
-          <div class="bonus">$50 Bonus on Signup</div>
-          <div class="sub">Best for higher multipliers</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-
-    <a href="https://sleeper.com/i/mlwweyrDJo9dB" target="_blank" class="platform-card">
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a1520;">💤</div>
-        <div class="platform-info">
-          <div class="name">Sleeper</div>
-          <div class="bonus">Free to Play + Prizes</div>
-          <div class="sub">Best mobile fantasy experience</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-
-  </div>
-
-  <div class="section-title">📲 Follow For Daily Picks</div>
-  <div class="socials">
-    <a href="https://x.com/ColdLinePicks" target="_blank" class="social-btn">
-      🐦 @ColdLinePicks
-    </a>
-  </div>
-
-  <div class="disclaimer">
-    <p>
-      <strong>🚨 DISCLAIMER</strong><br>
-      All picks posted by Cold Line Picks are for <strong>entertainment purposes only</strong>.
-      Nothing here constitutes financial, betting, or investment advice.
-      No outcomes are guaranteed. You are <strong>100% responsible</strong> for your own decisions.
-      Cold Line Picks is not liable for any losses.
-      Fantasy sports and sports picks involve risk. Play responsibly. Must be 18+.
-      <strong>Do your own research.</strong>
-    </p>
-  </div>
-
-</div>
-
-<script>
-  const snow = document.getElementById('snow');
-  for (let i = 0; i < 15; i++) {
-    const flake = document.createElement('div');
-    flake.className = 'flake';
-    flake.textContent = '❄';
-    flake.style.left = Math.random() * 100 + 'vw';
-    flake.style.animationDuration = (8 + Math.random() * 12) + 's';
-    flake.style.animationDelay = (Math.random() * 10) + 's';
-    flake.style.fontSize = (12 + Math.random() * 16) + 'px';
-    snow.appendChild(flake);
-  }
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cold Line Picks | AI-Powered Sports Picks</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: #050810;
-    color: #fff;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 60px;
-  }
-
-  .header { text-align: center; margin-bottom: 36px; }
-  .logo { font-size: 52px; margin-bottom: 8px; filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.5)); }
-  .brand-name { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
-  .tagline { font-size: 13px; color: #00c8ff; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; font-weight: 500; }
-  .divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #00c8ff, transparent); margin: 20px auto; }
-  .stats { display: flex; gap: 32px; margin-bottom: 36px; text-align: center; }
-  .stat-item .number { font-size: 22px; font-weight: 800; color: #00c8ff; }
-  .stat-item .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-  .section-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; text-align: center; }
-  .platforms { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-  .platform-card { background: #0d1525; border: 1px solid #1a2840; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #fff; transition: all 0.2s ease; position: relative; overflow: hidden; }
-  .platform-card:hover { border-color: #00c8ff44; background: #0f1d35; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 200, 255, 0.08); }
-  .platform-left { display: flex; align-items: center; gap: 14px; }
-  .platform-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-  .platform-info .name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-  .platform-info .bonus { font-size: 12px; color: #00c8ff; font-weight: 600; }
-  .platform-info .sub { font-size: 11px; color: #666; margin-top: 1px; }
-  .signup-btn { background: linear-gradient(135deg, #00c8ff22, #0066ff22); border: 1px solid #00c8ff44; color: #00c8ff; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
-  .badge { position: absolute; top: -1px; right: 12px; background: #00c8ff; color: #050810; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 0 0 6px 6px; letter-spacing: 1px; text-transform: uppercase; }
-  .pick-card { width: 100%; max-width: 420px; background: linear-gradient(135deg, #0a1628, #0d1e35); border: 1px solid #1a3050; border-radius: 14px; padding: 22px; margin-bottom: 32px; position: relative; overflow: hidden; }
-  .pick-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .pick-label { font-size: 10px; color: #00c8ff; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
-  .pick-confidence { font-size: 11px; background: #00c8ff22; color: #00c8ff; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-  .pick-player { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-  .pick-line { font-size: 15px; color: #00c8ff; font-weight: 700; margin-bottom: 14px; }
-  .pick-stats { display: flex; flex-direction: column; gap: 5px; }
-  .pick-stat { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
-  .socials { display: flex; gap: 12px; margin-bottom: 32px; }
-  .social-btn { background: #0d1525; border: 1px solid #1a2840; color: #888; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-  .disclaimer { width: 100%; max-width: 420px; background: #0a0e18; border: 1px solid #1a1f2e; border-radius: 10px; padding: 16px; text-align: center; }
-  .disclaimer p { font-size: 11px; color: #444; line-height: 1.7; }
-  .disclaimer strong { color: #666; }
-  .snow { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-  .flake { position: absolute; color: #00c8ff; opacity: 0.06; font-size: 20px; animation: fall linear infinite; }
-  @keyframes fall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 0.06; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
-  .content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #050810; color: #fff; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px 60px; }
+.header { text-align: center; margin-bottom: 36px; }
+.logo { font-size: 52px; margin-bottom: 8px; filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.5)); }
+.brand-name { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
+.tagline { font-size: 13px; color: #00c8ff; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; font-weight: 500; }
+.divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #00c8ff, transparent); margin: 20px auto; }
+.stats { display: flex; gap: 32px; margin-bottom: 36px; text-align: center; }
+.stat-item .number { font-size: 22px; font-weight: 800; color: #00c8ff; }
+.stat-item .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.section-title { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; text-align: center; }
+.platforms { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.platform-card { background: #0d1525; border: 1px solid #1a2840; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #fff; transition: all 0.2s ease; position: relative; overflow: hidden; }
+.platform-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,255,0.3), transparent); }
+.platform-card:hover { border-color: #00c8ff44; background: #0f1d35; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 200, 255, 0.08); }
+.platform-left { display: flex; align-items: center; gap: 14px; }
+.platform-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.platform-info .name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.platform-info .bonus { font-size: 12px; color: #00c8ff; font-weight: 600; }
+.platform-info .sub { font-size: 11px; color: #666; margin-top: 1px; }
+.signup-btn { background: linear-gradient(135deg, #00c8ff22, #0066ff22); border: 1px solid #00c8ff44; color: #00c8ff; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
+.platform-card:hover .signup-btn { background: linear-gradient(135deg, #00c8ff33, #0066ff33); border-color: #00c8ff88; }
+.badge { position: absolute; top: -1px; right: 12px; background: #00c8ff; color: #050810; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 0 0 6px 6px; letter-spacing: 1px; text-transform: uppercase; }
+.pick-card { width: 100%; max-width: 420px; background: linear-gradient(135deg, #0a1628, #0d1e35); border: 1px solid #1a3050; border-radius: 14px; padding: 22px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.pick-card::after { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0,200,255,0.03) 0%, transparent 60%); pointer-events: none; }
+.pick-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pick-label { font-size: 10px; color: #00c8ff; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+.pick-confidence { font-size: 11px; background: #00c8ff22; color: #00c8ff; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.pick-player { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.pick-line { font-size: 15px; color: #00c8ff; font-weight: 700; margin-bottom: 14px; }
+.pick-stats { display: flex; flex-direction: column; gap: 5px; }
+.pick-stat { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
+.pick-stat::before { content: '→'; color: #00c8ff; font-size: 10px; }
+.socials { display: flex; gap: 12px; margin-bottom: 32px; }
+.social-btn { background: #0d1525; border: 1px solid #1a2840; color: #888; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+.social-btn:hover { border-color: #00c8ff44; color: #fff; }
+.disclaimer { width: 100%; max-width: 420px; background: #0a0e18; border: 1px solid #1a1f2e; border-radius: 10px; padding: 16px; text-align: center; }
+.disclaimer p { font-size: 11px; color: #444; line-height: 1.7; }
+.disclaimer strong { color: #666; }
+.snow { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.flake { position: absolute; color: #00c8ff; opacity: 0.06; font-size: 20px; animation: fall linear infinite; }
+@keyframes fall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 0.06; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+.content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
 </style>
 </head>
 <body>
 <div class="snow" id="snow"></div>
 <div class="content">
-  <div class="header">
-    <div class="logo">❄️</div>
-    <div class="brand-name">Cold Line Picks</div>
-    <div class="tagline">AI-Powered · Data-Driven · No Hype</div>
-    <div class="divider"></div>
-  </div>
-  <div class="stats">
-    <div class="stat-item"><div class="number">Daily</div><div class="label">Picks Posted</div></div>
-    <div class="stat-item"><div class="number">100%</div><div class="label">Data-Backed</div></div>
-    <div class="stat-item"><div class="number">Free</div><div class="label">Always</div></div>
-  </div>
-  <div class="section-title">⚡ Today's Pick</div>
-  <div class="pick-card">
-    <div class="pick-header"><span class="pick-label">❄ Cold Line | ECF G3</span><span class="pick-confidence">HIGH 🔥</span></div>
-    <div class="pick-player">Jalen Brunson</div>
-    <div class="pick-line">OVER 24.5 pts 🎯</div>
-    <div class="pick-stats">
-      <div class="pick-stat">30.4 PPG playoff avg — elite usage rate</div>
-      <div class="pick-stat">Cavs adjusting — Brunson thrives in must-win spots</div>
-      <div class="pick-stat">Knicks up 2-0 — JB locked in all series</div>
-    </div>
-  </div>
-  <div class="section-title">🎯 Play Our Picks On These Platforms</div>
-  <div class="platforms">
-    <a href="https://app.prizepicks.com/sign-up?invite_code=PR-28FME1N&source=prizepicks&medium=user_referral&campaign=108e927d-701d-4f2d-b46b-04380a7ff8c2&content=copy_link" target="_blank" class="platform-card">
-      <div class="badge">Most Popular</div>
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a2a1a;">🏆</div>
-        <div class="platform-info">
-          <div class="name">PrizePicks</div>
-          <div class="bonus">$50 Bonus on Signup</div>
-          <div class="sub">America's #1 Fantasy Picks App</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-    <a href="https://underdogfantasy.com" target="_blank" class="platform-card">
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a1a2a;">🐶</div>
-        <div class="platform-info">
-          <div class="name">Underdog Fantasy</div>
-          <div class="bonus">$50 Bonus on Signup</div>
-          <div class="sub">Best for higher multipliers</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-    <a href="https://sleeper.com/i/mlwweyrDJo9dB" target="_blank" class="platform-card">
-      <div class="platform-left">
-        <div class="platform-icon" style="background:#1a1520;">💤</div>
-        <div class="platform-info">
-          <div class="name">Sleeper</div>
-          <div class="bonus">Free to Play + Prizes</div>
-          <div class="sub">Best mobile fantasy experience</div>
-        </div>
-      </div>
-      <div class="signup-btn">JOIN →</div>
-    </a>
-  </div>
-  <div class="section-title">📲 Follow For Daily Picks</div>
-  <div class="socials">
-    <a href="https://x.com/ColdLinePicks" target="_blank" class="social-btn">🐦 @ColdLinePicks</a>
-  </div>
-  <div class="disclaimer">
-    <p><strong>🚨 DISCLAIMER</strong><br>All picks posted by Cold Line Picks are for <strong>entertainment purposes only</strong>. Nothing here constitutes financial, betting, or investment advice. No outcomes are guaranteed. You are <strong>100% responsible</strong> for your own decisions. Cold Line Picks is not liable for any losses. Fantasy sports involve risk. Play responsibly. Must be 18+. <strong>Do your own research.</strong></p>
-  </div>
+<div class="header">
+<div class="logo">&#x2744;&#xFE0F;</div>
+<div class="brand-name">Cold Line Picks</div>
+<div class="tagline">AI-Powered &middot; Data-Driven &middot; No Hype</div>
+<div class="divider"></div>
+</div>
+<div class="stats">
+<div class="stat-item"><div class="number">Daily</div><div class="label">Picks Posted</div></div>
+<div class="stat-item"><div class="number">100%</div><div class="label">Data-Backed</div></div>
+<div class="stat-item"><div class="number">Free</div><div class="label">Always</div></div>
+</div>
+<div class="section-title">&#x26A1; Tonight's Picks | WCF Game 4 &mdash; May 24</div>
+<div class="pick-card">
+<div class="pick-header">
+<span class="pick-label">&#x2744; Cold Line | 2-Pick Power Play</span>
+<span class="pick-confidence">HIGH &#x1F525;</span>
+</div>
+<div class="pick-player">Castle + Vassell</div>
+<div class="pick-line">Spurs Home Stand Duo &#x1F3AF;</div>
+<div class="pick-stats">
+<div class="pick-stat">Castle OVER 6.5 AST &mdash; 11/8/7 in this series, 8.7 APG avg, 75% hit rate in home playoffs</div>
+<div class="pick-stat">Vassell OVER 13.5 PTS &mdash; 22 and 20 in last 2 games, Spurs need him aggressive at home</div>
+<div class="pick-stat">Series survival mode for SA &mdash; both stars get elevated usage in G4</div>
+</div>
+</div>
+<div class="pick-card" style="border-color:#1a3a50;">
+<div class="pick-header">
+<span class="pick-label">&#x2744; Cold Line | Goblin Play</span>
+<span class="pick-confidence">LOCK &#x1F9CA;</span>
+</div>
+<div class="pick-player">Chet Holmgren</div>
+<div class="pick-line">UNDER 21.5 Pts + Reb</div>
+<div class="pick-stats">
+<div class="pick-stat">Only 10.5 PPG vs Spurs in 6 reg season games &mdash; went over 14.5 pts just ONCE all year</div>
+<div class="pick-stat">39.6% FG, 25.0% from three vs San Antonio this season &mdash; matchup kills his efficiency</div>
+<div class="pick-stat">Wembanyama's length disrupts Holmgren's whole game &mdash; goes quiet in SA building</div>
+</div>
+</div>
+<div class="pick-card" style="border-color:#1a3a30; margin-bottom: 32px;">
+<div class="pick-header">
+<span class="pick-label">&#x2744; Cold Line | 3-Pick Flex</span>
+<span class="pick-confidence">VALUE &#x1F48E;</span>
+</div>
+<div class="pick-player">SGA + Caruso + Holmgren</div>
+<div class="pick-line">3-Pick Flex Play</div>
+<div class="pick-stats">
+<div class="pick-stat">SGA OVER 7.5 AST &mdash; 11/9/9 in this series, averaging 11.0 APG vs a 7.5 line</div>
+<div class="pick-stat">Caruso OVER 10.5 PTS &mdash; 21.0 PPG this series, 60.8% from three, 3-0 on this WCF line</div>
+<div class="pick-stat">Holmgren UNDER 21.5 P+R &mdash; historical Spurs struggles, Wemby makes life hard</div>
+</div>
+</div>
+<div class="section-title">&#x1F3AF; Play Our Picks On These Platforms</div>
+<div class="platforms">
+<a href="https://app.prizepicks.com/sign-up?invite_code=PR-28FME1N&source=prizepicks&medium=user_referral&campaign=108e927d-701d-4f2d-b46b-04380a7ff8c2&content=copy_link" target="_blank" class="platform-card">
+<div class="badge">Most Popular</div>
+<div class="platform-left">
+<div class="platform-icon" style="background:#1a2a1a;">&#x1F3C6;</div>
+<div class="platform-info">
+<div class="name">PrizePicks</div>
+<div class="bonus">$50 Bonus on Signup</div>
+<div class="sub">America's #1 Fantasy Picks App</div>
+</div>
+</div>
+<div class="signup-btn">JOIN &rarr;</div>
+</a>
+<a href="https://underdogfantasy.com" target="_blank" class="platform-card">
+<div class="platform-left">
+<div class="platform-icon" style="background:#1a1a2a;">&#x1F436;</div>
+<div class="platform-info">
+<div class="name">Underdog Fantasy</div>
+<div class="bonus">$50 Bonus on Signup</div>
+<div class="sub">Best for higher multipliers</div>
+</div>
+</div>
+<div class="signup-btn">JOIN &rarr;</div>
+</a>
+<a href="https://sleeper.com/i/mlwweyrDJo9dB" target="_blank" class="platform-card">
+<div class="platform-left">
+<div class="platform-icon" style="background:#1a1520;">&#x1F4A4;</div>
+<div class="platform-info">
+<div class="name">Sleeper</div>
+<div class="bonus">Free to Play + Prizes</div>
+<div class="sub">Best mobile fantasy experience</div>
+</div>
+</div>
+<div class="signup-btn">JOIN &rarr;</div>
+</a>
+</div>
+<div class="section-title">&#x1F4F2; Follow For Daily Picks</div>
+<div class="socials">
+<a href="https://x.com/ColdLinePicks" target="_blank" class="social-btn">&#x1F426; @ColdLinePicks</a>
+</div>
+<div class="disclaimer">
+<p><strong>&#x1F6A8; DISCLAIMER</strong><br>All picks posted by Cold Line Picks are for <strong>entertainment purposes only</strong>. Nothing here constitutes financial, betting, or investment advice. No outcomes are guaranteed. You are <strong>100% responsible</strong> for your own decisions. Cold Line Picks is not liable for any losses. Fantasy sports and sports picks involve risk. Play responsibly. Must be 18+. <strong>Do your own research.</strong></p>
+</div>
 </div>
 <script>
-  const snow = document.getElementById('snow');
-  for (let i = 0; i < 15; i++) {
-    const flake = document.createElement('div');
-    flake.className = 'flake';
-    flake.textContent = '❄';
-    flake.style.left = Math.random() * 100 + 'vw';
-    flake.style.animationDuration = (8 + Math.random() * 12) + 's';
-    flake.style.animationDelay = (Math.random() * 10) + 's';
-    flake.style.fontSize = (12 + Math.random() * 16) + 'px';
-    snow.appendChild(flake);
-  }
+const snow = document.getElementById('snow');
+for (let i = 0; i < 15; i++) {
+const flake = document.createElement('div');
+flake.className = 'flake';
+flake.textContent = '❄';
+flake.style.left = Math.random() * 100 + 'vw';
+flake.style.animationDuration = (8 + Math.random() * 12) + 's';
+flake.style.animationDelay = (Math.random() * 10) + 's';
+flake.style.fontSize = (12 + Math.random() * 16) + 'px';
+snow.appendChild(flake);
+}
 </script>
 </body>
 </html>
